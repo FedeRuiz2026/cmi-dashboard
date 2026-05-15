@@ -192,6 +192,27 @@
     </div>
     <h2>Tendencia mensual <span class="sub">— mediana de días por mes</span></h2>
     <div class="card"><canvas id="b4c-cTrend" height="160"></canvas></div>
+
+    <h2>Estado del pipeline <span class="sub">— solicitudes activas por fase</span></h2>
+    <div class="card"><canvas id="b4c-cPipeline" height="140"></canvas></div>
+
+    <h2>1ra entrega → Aprobadas <span class="sub">— tiempo de aprobación por el cliente</span></h2>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">
+      <div class="kpi"><div class="label">⏳ Mediana aprobación</div><div class="value orange" id="b4c-ra-med"></div><div class="delta" id="b4c-ra-n"></div></div>
+      <div class="kpi"><div class="label">⏳ P90 aprobación</div><div class="value orange" id="b4c-ra-p90"></div><div class="delta">9 de 10 cards aprueban antes</div></div>
+      <div class="kpi"><div class="label">📋 Cards medidas</div><div class="value" id="b4c-ra-cnt"></div><div class="delta">con dato completo Rev→Aprobadas</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>📊 Distribución de días hasta aprobación</h3><canvas id="b4c-cRevApprDist" height="200"></canvas></div>
+      <div class="card">
+        <h3>📋 Detalle por card <span class="hint">Rev → Aprobadas</span></h3>
+        <table>
+          <thead><tr><th>Card</th><th>1ra entrega</th><th>Aprobada</th><th>Días</th><th></th></tr></thead>
+          <tbody id="b4c-t-revappr"></tbody>
+        </table>
+      </div>
+    </div>
+
     <h2>Detalle por card <span class="sub">— ordenado por tiempo total</span></h2>
     <div class="card">
       <table>
@@ -230,6 +251,27 @@
     </div>
     <h2>Tendencia mensual <span class="sub">— mediana de días por mes</span></h2>
     <div class="card"><canvas id="sc-cTrend" height="160"></canvas></div>
+
+    <h2>Estado del pipeline <span class="sub">— solicitudes activas por fase</span></h2>
+    <div class="card"><canvas id="sc-cPipeline" height="140"></canvas></div>
+
+    <h2>1ra entrega → Aprobadas <span class="sub">— tiempo de aprobación por el cliente</span></h2>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">
+      <div class="kpi"><div class="label">⏳ Mediana aprobación</div><div class="value orange" id="sc-ra-med"></div><div class="delta" id="sc-ra-n"></div></div>
+      <div class="kpi"><div class="label">⏳ P90 aprobación</div><div class="value orange" id="sc-ra-p90"></div><div class="delta">9 de 10 cards aprueban antes</div></div>
+      <div class="kpi"><div class="label">📋 Cards medidas</div><div class="value" id="sc-ra-cnt"></div><div class="delta">con dato completo Rev→Aprobadas</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>📊 Distribución de días hasta aprobación</h3><canvas id="sc-cRevApprDist" height="200"></canvas></div>
+      <div class="card">
+        <h3>📋 Detalle por card <span class="hint">Rev → Aprobadas</span></h3>
+        <table>
+          <thead><tr><th>Card</th><th>1ra entrega</th><th>Aprobada</th><th>Días</th><th></th></tr></thead>
+          <tbody id="sc-t-revappr"></tbody>
+        </table>
+      </div>
+    </div>
+
     <h2>Detalle por card <span class="sub">— ordenado por tiempo total</span></h2>
     <div class="card">
       <table>
@@ -264,6 +306,26 @@
       <div class="card"><h3>📥 Recibida → En proceso <span class="hint" id="rd-n1"></span></h3><canvas id="rd-c1" height="200"></canvas></div>
       <div class="card"><h3>🚀 En proceso → 1ra entrega <span class="hint" id="rd-n2"></span></h3><canvas id="rd-c2" height="200"></canvas></div>
     </div>
+    <h2>Estado del pipeline <span class="sub">— solicitudes activas por fase</span></h2>
+    <div class="card"><canvas id="rd-cPipeline" height="140"></canvas></div>
+
+    <h2>1ra entrega → Aprobadas <span class="sub">— tiempo de aprobación por el cliente</span></h2>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">
+      <div class="kpi"><div class="label">⏳ Mediana aprobación</div><div class="value rd" id="rd-ra-med"></div><div class="delta" id="rd-ra-n"></div></div>
+      <div class="kpi"><div class="label">⏳ P90 aprobación</div><div class="value rd" id="rd-ra-p90"></div><div class="delta">9 de 10 cards aprueban antes</div></div>
+      <div class="kpi"><div class="label">📋 Cards medidas</div><div class="value" id="rd-ra-cnt"></div><div class="delta">con dato completo Rev→Aprobadas</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>📊 Distribución de días hasta aprobación</h3><canvas id="rd-cRevApprDist" height="200"></canvas></div>
+      <div class="card">
+        <h3>📋 Detalle por card <span class="hint">Rev → Aprobadas</span></h3>
+        <table>
+          <thead><tr><th>Card</th><th>1ra entrega</th><th>Aprobada</th><th>Días</th><th></th></tr></thead>
+          <tbody id="rd-t-revappr"></tbody>
+        </table>
+      </div>
+    </div>
+
     <h2>Detalle por card</h2>
     <div class="card">
       <table>
@@ -424,7 +486,56 @@ function renderTiempos(prefix, T, color1, color2) {
     });
   }
 
-  // Detail table
+  // ── Pipeline chart ─────────────────────────────────────────────────────────
+  const pipeEl = document.getElementById(`${prefix}-cPipeline`);
+  if (pipeEl && T.pipeline) {
+    const pColors = ['#9aa6bd','#4f8cff','#f5b94a','#f08c4a','#2ecc71','#21c7c7'];
+    new Chart(pipeEl, {
+      type: 'bar',
+      data: {
+        labels: T.pipeline.labels,
+        datasets:[{ label:'Solicitudes', data:T.pipeline.counts, backgroundColor:pColors, borderRadius:6, barThickness:36 }]
+      },
+      options:{
+        indexAxis:'y',
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.parsed.x} solicitudes`}} },
+        scales:{
+          x:{ beginAtZero:true, grid:{color:'#1c2740'}, ticks:{stepSize:1,color:'#9aa6bd'} },
+          y:{ grid:{display:false}, ticks:{color:'#e7ecf5',font:{size:12}} }
+        }
+      }
+    });
+  }
+
+  // ── Rev → Aprobadas ────────────────────────────────────────────────────────
+  const ra = T.rev_appr;
+  if (ra) {
+    const setId2 = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+    setId2(`${prefix}-ra-med`, fmtDays(ra.stats.median_d));
+    setId2(`${prefix}-ra-p90`, fmtDays(ra.stats.p90_d));
+    setId2(`${prefix}-ra-cnt`, ra.stats.n);
+    setId2(`${prefix}-ra-n`,   `Promedio ${fmtDays(ra.stats.mean_d)} · n=${ra.stats.n} cards`);
+    const bucketOrder2 = ['<1d','1-3d','4-7d','8-14d','15-30d','>30d'];
+    const raDistEl = document.getElementById(`${prefix}-cRevApprDist`);
+    if (raDistEl) {
+      new Chart(raDistEl, {
+        type:'bar',
+        data:{ labels:bucketOrder2, datasets:[{ label:'Cards', data:bucketOrder2.map(b=>ra.buckets[b]||0), backgroundColor:['#2ecc71','#7fc97f','#f5b94a','#f08c4a','#ef5b5b','#a93f3f'], borderRadius:5 }] },
+        options:{ plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,grid:{color:'#1c2740'},title:{display:true,text:'cards'}},x:{grid:{display:false}}} }
+      });
+    }
+    const raTable = document.getElementById(`${prefix}-t-revappr`);
+    if (raTable) {
+      ra.cards.forEach(c => {
+        const pill = c.days>30?'red':c.days>14?'orange':c.days>7?'yellow':'green';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${c.name}</td><td>${c.rev_date||'—'}</td><td>${c.appr_date||'—'}</td><td><span class="pill ${pill}">${fmtDays(c.days)}</span></td><td>${c.url?`<a href="${c.url}" target="_blank">↗</a>`:''}</td>`;
+        raTable.appendChild(tr);
+      });
+    }
+  }
+
+  // ── Detail cards table ─────────────────────────────────────────────────────
   const tbl = document.getElementById(`${prefix}-t-cards`);
   const sorted = [...T.cards_measured].sort((a,b) => ((b.t_intake_d||0)+(b.t_prod_d||0)) - ((a.t_intake_d||0)+(a.t_prod_d||0)));
   sorted.forEach(c => {
